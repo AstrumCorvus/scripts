@@ -3,7 +3,6 @@ import os
 import sys
 import time
 import glob
-# --- NEW: Import for global keyboard listener ---
 from pynput import keyboard
 
 # ===============================================
@@ -17,15 +16,15 @@ IMAGE_METAMAP_VERIFICATION = r"C:\Users\User\Downloads\scripts\Fotos\MetamapVeri
 IMAGE_PDF_TEST_JP = r"C:\Users\User\Downloads\scripts\Fotos\Pdf.TestJp.png"
 IMAGE_GUARDAR = r"C:\Users\User\Downloads\scripts\Fotos\Guardar.png"
 IMAGE_PDF_CARPETA = r"C:\Users\User\Downloads\scripts\Fotos\Pdf_Carpeta.png"
-IMAGE_COPIAR_LOCAL = r"C:\Users\User\Downloads\scripts\Fotos\Copiar_Local.png"
+IMAGE_PEGAR_LOCAL = r"C:\Users\User\Downloads\scripts\Fotos\Pegar_Local.png"
 
 
 SIGNATURE_OUTPUT_DIR = r"C:\Users\User\Desktop\Pdf.Test\Fotos"
 
 # --- General Configuration ---
 STARTUP_DELAY = 10       # Seconds to wait before starting the loop (Requested: 10s)
-TEST_LOOP_COUNT = 3      # Number of times to run the main process (Requested: 3)
-POST_CLICK_DELAY = 1.5   # Seconds to wait after most clicks/key presses (Increased)
+TEST_LOOP_COUNT = 6      # Number of times to run the main process (Requested: 3)
+POST_CLICK_DELAY = 0.5   # Seconds to wait after most clicks/key presses (Increased)
 MOVE_DURATION = 0.2      # Time in seconds for the mouse to move
 CONFIDENCE_LEVEL = 0.70  # IMPORTANT: Adjusted confidence to 70% for robust image detection
 
@@ -356,10 +355,10 @@ def run_main_loop():
 
                 # [19] Select 'Paste' (moves PDF) - DYNAMIC
                 if not running: break
-                print("   [19] Searching for 'copiar_local.png' to click path...")
+                print("   [19] Searching for 'pegar_local.png' to click path...")
                 
                 # --- FIX: Corrected variable name ---
-                copiar_local_loc = check_for_image(IMAGE_COPIAR_LOCAL)
+                copiar_local_loc = check_for_image(IMAGE_PEGAR_LOCAL)
                 
                 if not copiar_local_loc:
                     print("   ❌ ERROR: 'COPIAR_LOCAL' (Paste) image NOT found. Aborting cycle.")

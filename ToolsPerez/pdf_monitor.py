@@ -9,7 +9,7 @@ from watchdog.events import FileSystemEventHandler
 # ===============================================
 
 # 📂 Directory to WATCH for new PDF files
-INPUT_DIRECTORY = r"C:\Users\User\Desktop\Pdf.Test" 
+INPUT_DIRECTORY = r"C:\Users\User\Desktop\Pdf.Test\Pdfs" 
 
 # 🗄️ Directory where all output JPG files should be saved
 OUTPUT_DIRECTORY = r"C:\Users\User\Desktop\Pdf.Test\Fotos"
