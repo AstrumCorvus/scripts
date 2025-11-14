@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "repos",
+			"path": "../../repos"
+		}
+	]
+}
