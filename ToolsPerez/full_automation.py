@@ -17,14 +17,19 @@ IMAGE_PDF_TEST_JP = r"C:\Users\User\Downloads\scripts\Fotos\Pdf.TestJp.png"
 IMAGE_GUARDAR = r"C:\Users\User\Downloads\scripts\Fotos\Guardar.png"
 IMAGE_PDF_CARPETA = r"C:\Users\User\Downloads\scripts\Fotos\Pdf_Carpeta.png"
 IMAGE_PEGAR_LOCAL = r"C:\Users\User\Downloads\scripts\Fotos\Pegar_Local.png"
+# --- NEW: Added 'Cerrar' Image for Step [32] ---
+IMAGE_CERRAR = r"C:\Users\User\Downloads\scripts\Fotos\Cerrar.png"
 
+# --- Warning/Ignore Images ---
+IMAGE_ADVERTENCIA = r"C:\Users\User\Downloads\scripts\Fotos\Advertencia.png"
+IMAGE_IGNORAR = r"C:\Users\User\Downloads\scripts\Fotos\Ignorar.png"
 
 SIGNATURE_OUTPUT_DIR = r"C:\Users\User\Desktop\Pdf.Test\Fotos"
 
 # --- General Configuration ---
 STARTUP_DELAY = 10       # Seconds to wait before starting the loop (Requested: 10s)
-TEST_LOOP_COUNT = 6      # Number of times to run the main process (Requested: 3)
-POST_CLICK_DELAY = 0.5   # Seconds to wait after most clicks/key presses (Increased)
+TEST_LOOP_COUNT = 3      # Number of times to run the main process (Set to 6)
+POST_CLICK_DELAY = 0.5   # Seconds to wait after most clicks/key presses
 MOVE_DURATION = 0.2      # Time in seconds for the mouse to move
 CONFIDENCE_LEVEL = 0.70  # IMPORTANT: Adjusted confidence to 70% for robust image detection
 
@@ -34,13 +39,13 @@ CONFIDENCE_LEVEL = 0.70  # IMPORTANT: Adjusted confidence to 70% for robust imag
 
 COORDS = {
     # [1A] Initial Table Selection (Only runs once at start)
-    "[1A] Initial Selection": (1101, 276),
+    "[1A] Initial Selection": (1196, 245),
     # Standard Procedure Inside Loan Object
-    "[2] Right-Click for Options": (1247, 201), 
-    "[3] Click Save As": (1287, 401),
+    "[2] Right-Click for Options": (1247, 215), 
+    "[3] Click Save As": (1324, 453),
     "[4] Click cropdf path": (1373, 129),
     "[5] Select pdf folder": (1357, 243),
-    "[7] Click Save": (1683, 634), # This coordinate is still used
+    "[7] Click Save": (1709, 625), 
     "[9] Hold Scroll Down": (1910, 986),
     "[10] Select File Manager Folder": (1240, 972),
     "[11] Hold Scroll Up": (1911, 49),
@@ -49,9 +54,6 @@ COORDS = {
     "[13] Select pdf folder (File Mngr)": (1354, 185),
     "[15] Right-Click on PDF": (1354, 185),
     "[16] Select Cut Option": (1120, 644), 
-    # [17] Removed - Now Dynamic
-    # [18] Removed - Now Dynamic
-    # [19] Removed - Now Dynamic
     "[20] Click Fotos folder": (377, 235),
     # --- Cut Cropped Image back to Target Folder ---
     "[22] Right-Click on Newest PNG": (278, 244),
@@ -64,18 +66,17 @@ COORDS = {
     "[29] Hold Scroll Down": (1910, 986),
     "[30] Click Celesol": (1364, 966),
     "[31] Hold Scroll Up": (1911, 49),
-    "[32] Close Loan Tab": (1516, 139), 
-    "[33] Right-Click Signature Field": (1510, 332),
-    "[34] Open PNG Folder": (1557, 470),
+    "[32] Close Adjuntos Tab": (1550, 150), 
+    "[33] Right-Click Signature Field": (1450, 380),
+    "[34] Open PNG Folder": (1530, 550),
     "[35] Select Newest PNG": (1564, 435), 
-    "[36] Save and Close": (1064, 110),
+    "[36] Save and Close": (1085, 110),
 }
 
 
 # ===============================================
 # --- 3. GLOBAL CONTROL & HELPER FUNCTIONS ---
 # ===============================================
-# ... (Global 'running' flag and helper functions: on_press, find_newest_file, wait_for_new_signature, check_for_image, move_and_click, hold_mouse, press_key)
 # Global flag for non-console interruption
 running = True 
 
@@ -97,9 +98,11 @@ def on_press(key):
 def find_newest_file(directory, extension="jpg"):
     """Finds the path of the newest file with a given extension in a directory."""
     try:
+        # Use glob to find all files with the specific extension
         list_of_files = glob.glob(os.path.join(directory, f'*.{extension}'))
         if not list_of_files:
             return None
+        # Get the file with the most recent creation time
         latest_file = max(list_of_files, key=os.path.getctime)
         return latest_file
     except Exception as e:
@@ -117,23 +120,27 @@ def wait_for_new_signature(signature_dir, timeout=30):
         newest_file = find_newest_file(signature_dir, extension="jpg")
         if newest_file and os.path.exists(newest_file):
             try:
-                # Check if the file is still being written
+                # Check if the file is still being written by trying to access it
                 with open(newest_file, 'rb') as f:
-                    f.seek(-1, 2)
-                return newest_file
+                    f.seek(-1, 2) # Try seeking to the end
+                return newest_file # File is ready
             except Exception:
-                pass 
+                pass # File is likely locked or incomplete, try again
         time.sleep(1) # Poll every second
 
     print(f"❌ Timeout ({timeout}s) reached. Cropped signature did not appear.")
     return None
 
 def check_for_image(image_path):
-    """Searches the screen for the given image path."""
+    """Searches the screen for the given image path using PyAutoGUI's confidence setting."""
     image_name = os.path.basename(image_path)
     print(f"   🔎 Searching for '{image_name}'...")
     try:
-        location = pyautogui.locateOnScreen(image_path, confidence=CONFIDENCE_LEVEL, grayscale=True) 
+        location = pyautogui.locateOnScreen(
+            image_path, 
+            confidence=CONFIDENCE_LEVEL, 
+            grayscale=True
+        ) 
         return location
     except Exception as e:
         print(f"   Error during image search for {image_name}: {e}") 
@@ -147,7 +154,7 @@ def move_and_click(x, y, desc=""):
     time.sleep(POST_CLICK_DELAY)
 
 def hold_mouse(x, y, hold_time, desc=""):
-    """Moves the mouse, holds the left button down, and releases it."""
+    """Moves the mouse, holds the left button down for a duration, and releases it."""
     print(f"   -> Holding mouse button at X={x}, Y={y} for {hold_time:.3f}s... {desc}")
     pyautogui.moveTo(x, y, duration=MOVE_DURATION)
     pyautogui.mouseDown()
@@ -212,7 +219,7 @@ def run_main_loop():
                 print("   -> 'Sin Imagen' NOT found. Assuming signature is complete. Skipping object.")
                 
                 # Close current object and move to the next one
-                move_and_click(1323, 143, "   -> Closing loan object (Complete)")
+                move_and_click(1350, 150, "   -> Closing loan object (Complete)")
                 press_key('down', "   -> Moving to next item in list")
                 press_key('enter', "   -> Opening next item")
                 
@@ -232,7 +239,7 @@ def run_main_loop():
                     print("   ❌ 'metamap-verification' NOT found. Cannot proceed with download.")
                     
                     # Close current object and move to the next one
-                    move_and_click(1323, 143, "   -> Closing loan object (Verification file missing)")
+                    move_and_click(1350, 150, "   -> Closing loan object (Verification file missing)")
                     press_key('down', "   -> Moving to next item in list")
                     press_key('enter', "   -> Opening next item")
                     
@@ -249,7 +256,7 @@ def run_main_loop():
                 
                 if not running: break
 
-                # [2] Right-click PDF location
+                # [2] Right-click PDF location (in the newly opened window)
                 x2, y2 = COORDS["[2] Right-Click for Options"]
                 pyautogui.moveTo(x2, y2, duration=MOVE_DURATION)
                 pyautogui.rightClick()
@@ -276,17 +283,8 @@ def run_main_loop():
                 
                 # --- FILE MANAGEMENT: Wait for Cropper ---
                 
-                # [7.1] *** CRITICAL: UN-COMMENTED THIS BLOCK ***
-                # This block is required to wait for pdf_monitor.py to finish.
-                #cropped_signature_path = wait_for_new_signature(SIGNATURE_OUTPUT_DIR)
-                
-                #if not running: break # Check interrupt flag during wait
-                
-                #if not cropped_signature_path:
-                    #print("   ❌ Failed to find cropped signature after waiting. Aborting cycle.")
-                    #break 
-
-               # print(f"   -> Found new cropped signature: {os.path.basename(cropped_signature_path)}")
+                # Note: We do NOT wait here anymore, because the file is on the remote desktop.
+                # We wait at step [19.1] after copying it locally.
 
                 # --- Move PDF to 'Processed' and PNG back to target location ---
                 
@@ -353,6 +351,7 @@ def run_main_loop():
                 pyautogui.rightClick()
                 time.sleep(POST_CLICK_DELAY)
 
+
                 # [19] Select 'Paste' (moves PDF) - DYNAMIC
                 if not running: break
                 print("   [19] Searching for 'pegar_local.png' to click path...")
@@ -370,6 +369,22 @@ def run_main_loop():
                 # Added delay to let OS finish pasting the file
                 time.sleep(1.0) 
 
+                # --- [19.1] MOVED BLOCK: Wait for PDF Monitor Service ---
+                # This block now runs AFTER the PDF is pasted locally.
+                # This allows pdf_monitor.py to see the file and create the JPG.
+                
+                cropped_signature_path = wait_for_new_signature(SIGNATURE_OUTPUT_DIR)
+                
+                if not running: break # Check interrupt flag during wait
+                
+                if not cropped_signature_path:
+                    print("   ❌ Failed to find cropped signature after waiting. Aborting cycle.")
+                    break 
+
+                print(f"   -> Found new cropped signature: {os.path.basename(cropped_signature_path)}")
+
+                # --- File Operation 2: Move JPG back to Target Folder (Local Desktop) ---
+                
                 # [20] Click 'Fotos' folder (where the signature JPG is now)
                 x20, y20 = COORDS["[20] Click Fotos folder"]
                 move_and_click(x20, y20, "[20] Clicking 'Fotos' folder")
@@ -385,7 +400,7 @@ def run_main_loop():
 
                 # [23] Select 'Cut'
                 x23, y23 = COORDS["[23] Select Cut Option (PNG)"]
-                move_and_click(x23, y23, "[23] Selecting 'Cut' option for PNG")
+                move_and_click(x23, y23, "[23] Selecting 'Cut' option for PNG/JPG")
 
                 # [24] Navigate back to 'cropdf' path
                 x24, y24 = COORDS["[24] Click cropdf path (PNG Target)"]
@@ -410,6 +425,8 @@ def run_main_loop():
                 
                 if not running: break
 
+                # --- Return to Celesol and Upload ---
+
                 # [29] Hold Scroll Down
                 x29, y29 = COORDS["[29] Hold Scroll Down"]
                 hold_mouse(x29, y29, 1.304, "[29] Scrolling down remote desktop")
@@ -422,9 +439,9 @@ def run_main_loop():
                 x31, y31 = COORDS["[31] Hold Scroll Up"]
                 hold_mouse(x31, y31, 1.304, "[31] Scrolling up remote desktop")
 
-                # [32] Close Loan Tab
-                x32, y32 = COORDS["[32] Close Loan Tab"]
-                move_and_click(x32, y32, "[32] Closing loan object tab") 
+                # [32] Close Adjuntos Tab (the one that opened the PDF viewer) 
+                x32, y32 = COORDS["[32] Close Adjuntos Tab"]
+                move_and_click(x32, y32, "[32] Clicking to close 'Adjuntos' tab")
 
                 # [33] Right-click signature field
                 x33, y33 = COORDS["[33] Right-Click Signature Field"]
@@ -444,6 +461,25 @@ def run_main_loop():
                 # [36] Save and Close
                 x36, y36 = COORDS["[36] Save and Close"]
                 move_and_click(x36, y36, "[36] Clicking 'Save and Close'")
+                
+                # --- [36.1] NEW: Check for Warning Popup ---
+                if not running: break
+                print("   [36.1] Checking for 'Advertencia' (Warning) sign...")
+                time.sleep(1.0) # Give warning time to appear
+                
+                advertencia_loc = check_for_image(IMAGE_ADVERTENCIA)
+                
+                if advertencia_loc:
+                    print("   -> Warning sign FOUND. Searching for 'Ignorar' button...")
+                    ignorar_loc = check_for_image(IMAGE_IGNORAR)
+                    
+                    if ignorar_loc:
+                        ignorar_x, ignorar_y = pyautogui.center(ignorar_loc)
+                        move_and_click(ignorar_x, ignorar_y, " [36.2] Clicking 'Ignorar' button")
+                    else:
+                        print("   ❌ ERROR: Warning sign found, but 'Ignorar' button NOT found. Script may fail.")
+                else:
+                    print("   -> No warning sign detected. Proceeding normally.")
             
             # --- NEXT ITEM (Applies to both paths) ---
             
