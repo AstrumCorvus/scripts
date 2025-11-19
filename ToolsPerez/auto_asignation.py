@@ -44,11 +44,11 @@ CONFIDENCE_LEVEL = 0.70  # Confidence level for image detection
 
 COORDS = {
     # [2.3] / [3.3] / [4.2] Click to open analyst selection dropdown
-    "Open Selection": (1480, 213), 
+    "Open Selection": (670, 96), 
     # [2.4] Click and hold to scroll down the analyst list
-    "Scroll Analysts": (1497, 589),
+    "Scroll Analysts": (684, 473),
     # [2.6] / [3.5] / [4.4] Click to accept the new analyst assignment
-    "Accept Change": (1328, 941),
+    "Accept Change": (520, 518),
 }
 
 # ===============================================
