@@ -13,7 +13,6 @@ IMAGE_INGRESO = r"C:\Users\User\Downloads\scripts\Fotos\INGRESO.png"
 IMAGE_CBU1 = r"C:\Users\User\Downloads\scripts\Fotos\LINEACOMERCIALIZADORESCBU.png"
 IMAGE_CBU2 = r"C:\Users\User\Downloads\scripts\Fotos\LINEACOMERSNUEVOSCBU.png"
 IMAGE_CBU3 = r"C:\Users\User\Downloads\scripts\Fotos\LINEAPROPIACBU.png"
-IMAGE_CBU4 = r"C:\Users\User\Downloads\scripts\Fotos\LINEAPROPIACBURECURRENTE.png"
 IMAGE_CANC = r"C:\Users\User\Downloads\scripts\Fotos\CANC.png"
 IMAGE_CANCE = r"C:\Users\User\Downloads\scripts\Fotos\Cance.png"
 IMAGE_CAMBIAR_EJECUTIVO = r"C:\Users\User\Downloads\scripts\Fotos\CambiarEjecutivo.png"
@@ -241,8 +240,6 @@ def run_main_loop():
                 cbu_loc = check_for_image(IMAGE_CBU2, region=search_region)
             if not cbu_loc:
                 cbu_loc = check_for_image(IMAGE_CBU3, region=search_region)
-            if not cbu_loc:
-                cbu_loc = check_for_image(IMAGE_CBU4, region=search_region)
             
             # [3] Check for "CANC" or "Cance" in the same row
             canc_loc = check_for_image(IMAGE_CANC, region=search_region)
