@@ -29,7 +29,7 @@ SIGNATURE_OUTPUT_DIR = r"C:\Users\User\Desktop\Pdf.Test\Fotos"
 # --- General Configuration ---
 STARTUP_DELAY = 10       # Seconds to wait before starting the loop (Requested: 10s)
 TEST_LOOP_COUNT = 3      # Number of times to run the main process (Set to 6)
-POST_CLICK_DELAY = 0.5   # Seconds to wait after most clicks/key presses
+POST_CLICK_DELAY = 1.5   # Seconds to wait after most clicks/key presses
 MOVE_DURATION = 0.2      # Time in seconds for the mouse to move
 CONFIDENCE_LEVEL = 0.70  # IMPORTANT: Adjusted confidence to 70% for robust image detection
 
@@ -67,9 +67,9 @@ COORDS = {
     "[30] Click Celesol": (1364, 966),
     "[31] Hold Scroll Up": (1911, 49),
     "[32] Close Adjuntos Tab": (1550, 150), 
-    "[33] Right-Click Signature Field": (1450, 380),
-    "[34] Open PNG Folder": (1530, 550),
-    "[35] Select Newest PNG": (1564, 435), 
+    "[33] Right-Click Signature Field": (1500, 350),
+    "[34] Open PNG Folder": (1530, 520), 
+    "[35] Select Newest PNG": (1750, 365), 
     "[36] Save and Close": (1085, 110),
 }
 
@@ -452,6 +452,8 @@ def run_main_loop():
                 # [34] Open PNG Folder
                 x34, y34 = COORDS["[34] Open PNG Folder"]
                 move_and_click(x34, y34, "[34] Clicking to open PNG folder")
+
+                #change step 33, 34 to dynamic coords and double click
 
                 # [35] Select newest PNG (to select)
                 x35, y35 = COORDS["[35] Select Newest PNG"]
