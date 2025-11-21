@@ -28,7 +28,7 @@ SIGNATURE_OUTPUT_DIR = r"C:\Users\User\Desktop\Pdf.Test\Fotos"
 
 # --- General Configuration ---
 STARTUP_DELAY = 10       # Seconds to wait before starting the loop (Requested: 10s)
-TEST_LOOP_COUNT = 30      # Number of times to run the main process (Set to 6)
+TEST_LOOP_COUNT = 8      # Number of times to run the main process (Set to 6)
 POST_CLICK_DELAY = 0.7   # Seconds to wait after most clicks/key presses
 MOVE_DURATION = 0.2      # Time in seconds for the mouse to move
 CONFIDENCE_LEVEL = 0.70  # IMPORTANT: Adjusted confidence to 70% for robust image detection

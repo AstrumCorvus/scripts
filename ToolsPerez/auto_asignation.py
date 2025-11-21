@@ -19,7 +19,6 @@ IMAGE_CAMBIAR_EJECUTIVO = r"C:\Users\User\Downloads\scripts\Fotos\CambiarEjecuti
 IMAGE_ARIEL_ORTEGA = r"C:\Users\User\Downloads\scripts\Fotos\ArielOrtega.png"
 IMAGE_DANIEL_MONTANA = r"C:\Users\User\Downloads\scripts\Fotos\DanielMontana.png"
 IMAGE_JORGELINA_MARIN = r"C:\Users\User\Downloads\scripts\Fotos\JorgelinaMarin.png"
-# Added Stefania's path to resolve the previous error
 IMAGE_STEFANIA_SALGUERO = r"C:\Users\User\Downloads\scripts\Fotos\StefaniaSalguero.png" 
 
 # Dictionary to map analyst names to their image files
@@ -131,8 +130,8 @@ def find_and_click_analyst(analyst_name):
                 print("   ❌ ERROR: Could not find 'Jorgelina Marin' on screen.")
                 return False
             
-            # Find the one with the highest 'top' value (lowest on the screen)
-            target_loc = max(locations, key=lambda loc: loc.top)
+            # Find the one with the lowest 'top' value (highest on the screen)
+            target_loc = min(locations, key=lambda loc: loc.top)
             
         except Exception as e:
             print(f"   Error locating all 'Jorgelina Marin': {e}")
